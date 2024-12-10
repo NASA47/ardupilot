@@ -5,6 +5,14 @@
 #define AP_RANGEFINDER_DEFAULT_ORIENTATION ROTATION_PITCH_270
 #endif
 
+#ifndef AP_RANGEFINDER_DEFAULT_CRC
+#define AP_RANGEFINDER_DEFAULT_CRC  1
+#endif
+
+#ifndef AP_RANGEFINDER_DEFAULT_DEBUG
+#define AP_RANGEFINDER_DEFAULT_DEBUG 0
+#endif
+
 // table of user settable parameters
 const AP_Param::GroupInfo AP_RangeFinder_Params::var_info[] = {
     // @Param: TYPE
@@ -132,6 +140,21 @@ const AP_Param::GroupInfo AP_RangeFinder_Params::var_info[] = {
     // @Values: 0:Forward, 1:Forward-Right, 2:Right, 3:Back-Right, 4:Back, 5:Back-Left, 6:Left, 7:Forward-Left, 24:Up, 25:Down
     // @User: Advanced
     AP_GROUPINFO("ORIENT", 53, AP_RangeFinder_Params, orientation, AP_RANGEFINDER_DEFAULT_ORIENTATION),
+
+
+    // @Param: CRC
+    // @DisplayName: Rangefinder CRC Check enable
+    // @Description: Enables or disables CRC check on rangefinder's specific driver if supported
+    // @Values: 0:Disabled, 1: Enabled
+    // @User: Advanced
+    AP_GROUPINFO("CRC", 54, AP_RangeFinder_Params, crc, AP_RANGEFINDER_DEFAULT_CRC),
+
+    // @Param: DEBUG
+    // @DisplayName: Rangefinder Debug enable
+    // @Description: Enables or disables Debug on rangefinder's specific driver if supported
+    // @Values: 0:Disabled, 1: Enabled
+    // @User: Advanced
+    AP_GROUPINFO("DEBUG", 55, AP_RangeFinder_Params, debug, AP_RANGEFINDER_DEFAULT_DEBUG),
 
     AP_GROUPEND
 };

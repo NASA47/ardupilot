@@ -57,6 +57,7 @@
 #include "AP_RangeFinder_NoopLoop.h"
 #include "AP_RangeFinder_TOFSenseP_CAN.h"
 #include "AP_RangeFinder_NRA24_CAN.h"
+#include "AP_RangeFinder_NRA24Serial.h"
 #include "AP_RangeFinder_TOFSenseF_I2C.h"
 #include "AP_RangeFinder_JRE_Serial.h"
 
@@ -66,6 +67,7 @@
 #include <AP_Vehicle/AP_Vehicle_Type.h>
 #include <AP_HAL/I2CDevice.h>
 #include <AP_InternalError/AP_InternalError.h>
+#include <GCS_MAVLink/GCS.h>
 
 extern const AP_HAL::HAL &hal;
 
@@ -271,6 +273,7 @@ bool RangeFinder::_add_backend(AP_RangeFinder_Backend *backend, uint8_t instance
  */
 void RangeFinder::detect_instance(uint8_t instance, uint8_t& serial_instance)
 {
+    bool nra24serial_detected;
 #if AP_RANGEFINDER_ENABLED
     AP_RangeFinder_Backend_Serial *(*serial_create_fn)(RangeFinder::RangeFinder_State&, AP_RangeFinder_Params&) = nullptr;
 
@@ -583,6 +586,16 @@ void RangeFinder::detect_instance(uint8_t instance, uint8_t& serial_instance)
         serial_create_fn = AP_RangeFinder_JRE_Serial::create;
         break;
 #endif
+
+    case Type::NRA24_SERIAL:
+        nra24serial_detected = AP_RangeFinder_NRA24_Serial::detect(serial_instance);
+        GCS_SEND_TEXT(MAV_SEVERITY_WARNING, "NRA24_Serial detected: %s", 
+            (nra24serial_detected ? "True" : "False"));
+        if (nra24serial_detected) {
+            serial_create_fn = AP_RangeFinder_NRA24_Serial::create;
+            // drivers[instance] = new AP_RangeFinder_NRA24_Serial(state[instance], params[instance], serial_instance++);
+        }
+        break;
 
     case Type::NONE:
         break;
